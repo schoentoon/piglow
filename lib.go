@@ -23,7 +23,7 @@ func init() {
 	}
 }
 
-var values = []byte{0x01, 0x02, 0x04, 0x08, 0x10, 0x18, 0x20, 0x30, 0x40, 0x50, 0x60, 0x70, 0x80, 0x90, 0xA0, 0xC0, 0xE0, 0xFF}
+var values = []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
 
 func PiGlow(led, intensity byte) error {
 	if led < 0 || led > 18 {
@@ -35,10 +35,28 @@ func PiGlow(led, intensity byte) error {
 
 	values[led] = intensity
 
-	bus.WriteByteBlock(address, set_pwm_values, values)
-	bus.WriteByte(address, update, 0xFF)
+	err = bus.WriteByteBlock(address, set_pwm_values, values)
+	if err != nil {
+		return err
+	}
+	err = bus.WriteByte(address, update, 0xFF)
+	return err
+}
 
-	//bus.WriteByteBlock(address, reg, list)
+func ShutDown() error {
+	if err != nil {
+		return err
+	}
 
-	return nil
+	for i := 0; i < 18; i++ {
+		values[i] = 0x00
+	}
+
+	err = bus.WriteByteBlock(address, set_pwm_values, values)
+	if err != nil {
+		return err
+	}
+	err = bus.WriteByte(address, update, 0xFF)
+
+	return err
 }
