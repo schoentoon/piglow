@@ -25,6 +25,8 @@ func init() {
 
 var values = []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
 
+var legs = [][]byte{{6, 7, 8, 5, 4, 9}, {17, 16, 15, 13, 11, 10}, {0, 1, 2, 3, 14, 12}}
+
 func PiGlow(led, intensity byte) error {
 	if led < 0 || led > 18 {
 		return errors.New("Invalid LED")
@@ -34,6 +36,26 @@ func PiGlow(led, intensity byte) error {
 	}
 
 	values[led] = intensity
+
+	err = bus.WriteByteBlock(address, set_pwm_values, values)
+	if err != nil {
+		return err
+	}
+	err = bus.WriteByte(address, update, 0xFF)
+	return err
+}
+
+func PiGlowLeg(leg, intensity byte) error {
+	if leg < 0 || leg > 2 {
+		return errors.New("Invalid leg")
+	}
+	if err != nil {
+		return err
+	}
+
+	for _, led := range legs[leg] {
+		values[led] = intensity
+	}
 
 	err = bus.WriteByteBlock(address, set_pwm_values, values)
 	if err != nil {
