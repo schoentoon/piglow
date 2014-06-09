@@ -16,4 +16,9 @@ func main() {
 	}
 	time.Sleep(1 * time.Second)
 	ShutDown()
+	for i := 0; i < 6; i++ {
+		PiGlowRing(byte(i), 32)
+		time.Sleep(1 * time.Second)
+	}
+	ShutDown()
 }

@@ -65,6 +65,26 @@ func PiGlowLeg(leg, intensity byte) error {
 	return err
 }
 
+func PiGlowRing(color, intensity byte) error {
+	if color < 0 || color > 5 {
+		return errors.New("Invalid ring")
+	}
+	if err != nil {
+		return err
+	}
+
+	values[legs[0][color]] = intensity
+	values[legs[1][color]] = intensity
+	values[legs[2][color]] = intensity
+
+	err = bus.WriteByteBlock(address, set_pwm_values, values)
+	if err != nil {
+		return err
+	}
+	err = bus.WriteByte(address, update, 0xFF)
+	return err
+}
+
 func ShutDown() error {
 	if err != nil {
 		return err
