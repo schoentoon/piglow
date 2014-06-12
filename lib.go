@@ -16,6 +16,15 @@ const (
 	update         = 0x16
 )
 
+const (
+	Red byte = iota
+	Orange
+	Yellow
+	Green
+	Blue
+	White
+)
+
 func init() {
 	if bus != nil || err == nil {
 		err = bus.WriteByte(address, enable_output, 0x01)
