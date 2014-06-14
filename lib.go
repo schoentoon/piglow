@@ -54,6 +54,17 @@ func PiGlow(led, intensity byte) error {
 	return err
 }
 
+func PiGlowLed(leg, color, intensity byte) error {
+	if leg < 0 || leg > 2 {
+		return errors.New("Invalid leg")
+	}
+	if color < 0 || color > 5 {
+		return errors.New("Invalid color")
+	}
+
+	return PiGlow(legs[leg][color], intensity)
+}
+
 func PiGlowLeg(leg, intensity byte) error {
 	if leg < 0 || leg > 2 {
 		return errors.New("Invalid leg")
