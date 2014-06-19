@@ -3,6 +3,7 @@ package main
 import (
 	"bitbucket.org/gmcbay/i2c"
 	"errors"
+	"time"
 )
 
 var bus, err = i2c.Bus(1)
@@ -103,6 +104,29 @@ func PiGlowRing(color, intensity byte) error {
 	}
 	err = bus.WriteByte(address, update, 0xFF)
 	return err
+}
+
+func PiGlowFade(leg, color, from, to byte, interval time.Duration) error {
+	if leg < 0 || leg > 2 {
+		return errors.New("Invalid leg")
+	}
+	if color < 0 || color > 5 {
+		return errors.New("Invalid color")
+	}
+
+	for i := from; i != to; i++ {
+		values[legs[leg][color]] = i
+		err = bus.WriteByteBlock(address, set_pwm_values, values)
+		if err != nil {
+			return err
+		}
+		err = bus.WriteByte(address, update, 0xFF)
+		if err != nil {
+			return err
+		}
+		time.Sleep(interval)
+	}
+	return nil
 }
 
 func ShutDown() error {

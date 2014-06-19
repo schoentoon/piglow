@@ -36,3 +36,8 @@ func TestFlashRings(t *testing.T) {
 	}
 	ShutDown()
 }
+
+func TestFadeLed(t *testing.T) {
+	PiGlowFade(0, Red, 0x00, 0x64, 10*time.Millisecond)
+	ShutDown()
+}
