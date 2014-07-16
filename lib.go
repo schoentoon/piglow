@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------------
  */
 
-package main
+package piglow
 
 import (
 	"bitbucket.org/gmcbay/i2c"
