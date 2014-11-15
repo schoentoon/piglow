@@ -15,18 +15,18 @@ import (
 )
 
 func TestSingleLed(t *testing.T) {
-	PiGlowLed(1, Red, 0x10)
+	Led(1, Red, 0x10)
 	ShutDown()
 }
 
 func TestCircleLegs(t *testing.T) {
-	PiGlowLeg(0, 0x10)
+	Leg(0, 0x10)
 	time.Sleep(500 * time.Millisecond)
-	PiGlowLeg(0, 0x00)
-	PiGlowLeg(1, 0x10)
+	Leg(0, 0x00)
+	Leg(1, 0x10)
 	time.Sleep(500 * time.Millisecond)
-	PiGlowLeg(1, 0x00)
-	PiGlowLeg(2, 0x10)
+	Leg(1, 0x00)
+	Leg(2, 0x10)
 	time.Sleep(500 * time.Millisecond)
 	ShutDown()
 }
@@ -35,11 +35,11 @@ func TestFlashRings(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		for ring := 0; ring < 6; ring++ {
 			if ring == 0 {
-				PiGlowRing(5, 0x00)
+				Ring(5, 0x00)
 			} else {
-				PiGlowRing(byte(ring-1), 0x00)
+				Ring(byte(ring-1), 0x00)
 			}
-			PiGlowRing(byte(ring), 0x10)
+			Ring(byte(ring), 0x10)
 			time.Sleep(100 * time.Millisecond)
 		}
 	}
@@ -47,6 +47,6 @@ func TestFlashRings(t *testing.T) {
 }
 
 func TestFadeLed(t *testing.T) {
-	PiGlowFade(0, Red, 0x00, 0x64, 10*time.Millisecond)
+	Fade(0, Red, 0x00, 0x64, 10*time.Millisecond)
 	ShutDown()
 }
