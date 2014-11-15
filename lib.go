@@ -44,8 +44,10 @@ func init() {
 
 var values = []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
 
+// Array with the bytes for all the individual leds mapped according to [leg][color]
 var legs = [][]byte{{6, 7, 8, 5, 4, 9}, {17, 16, 15, 13, 11, 10}, {0, 1, 2, 3, 14, 12}}
 
+// Toggle a single led to a certain intensity
 func PiGlow(led, intensity byte) error {
 	if led < 0 || led > 18 {
 		return errors.New("Invalid LED")
@@ -64,6 +66,7 @@ func PiGlow(led, intensity byte) error {
 	return err
 }
 
+// Toggle a single led based on a leg and color
 func PiGlowLed(leg, color, intensity byte) error {
 	if leg < 0 || leg > 2 {
 		return errors.New("Invalid leg")
@@ -75,6 +78,7 @@ func PiGlowLed(leg, color, intensity byte) error {
 	return PiGlow(legs[leg][color], intensity)
 }
 
+// Entirely light up a complete leg
 func PiGlowLeg(leg, intensity byte) error {
 	if leg < 0 || leg > 2 {
 		return errors.New("Invalid leg")
@@ -95,6 +99,7 @@ func PiGlowLeg(leg, intensity byte) error {
 	return err
 }
 
+// Entirely light up a certain color/ring
 func PiGlowRing(color, intensity byte) error {
 	if color < 0 || color > 5 {
 		return errors.New("Invalid ring")
@@ -115,6 +120,8 @@ func PiGlowRing(color, intensity byte) error {
 	return err
 }
 
+// Fade a certain led at leg with color from intensity from to intensity to
+// with intervals of interval
 func PiGlowFade(leg, color, from, to byte, interval time.Duration) error {
 	if leg < 0 || leg > 2 {
 		return errors.New("Invalid leg")
@@ -138,6 +145,7 @@ func PiGlowFade(leg, color, from, to byte, interval time.Duration) error {
 	return nil
 }
 
+// Turn off all the lights
 func ShutDown() error {
 	if err != nil {
 		return err
