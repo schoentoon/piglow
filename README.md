@@ -1,6 +1,8 @@
 piglow
 ======
 
+[![GoDoc](https://godoc.org/github.com/schoentoon/piglow?status.svg)](https://godoc.org/github.com/schoentoon/piglow)
+
 A PiGlow library written in Go
 
 
