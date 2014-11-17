@@ -15,7 +15,7 @@ import (
 	"time"
 )
 
-var bus, err = i2c.Bus(1)
+var bus, bus_err = i2c.Bus(1)
 
 const (
 	address = 0x54
@@ -37,9 +37,9 @@ const (
 )
 
 func init() {
-	if bus != nil || err == nil {
-		err = bus.WriteByte(address, enableOutput, 0x01)
-		err = bus.WriteByteBlock(address, enableLeds, []byte{0xFF, 0xFF, 0xFF})
+	if bus != nil && bus_err == nil {
+		bus_err = bus.WriteByte(address, enableOutput, 0x01)
+		bus_err = bus.WriteByteBlock(address, enableLeds, []byte{0xFF, 0xFF, 0xFF})
 	}
 }
 
@@ -50,16 +50,17 @@ var legs = [][]byte{{6, 7, 8, 5, 4, 9}, {17, 16, 15, 13, 11, 10}, {0, 1, 2, 3, 1
 
 // PiGlow toggle a single led to a certain intensity
 func PiGlow(led, intensity byte) error {
+	if bus_err != nil {
+		return bus_err
+	}
+
 	if led < 0 || led > 18 {
 		return errors.New("invalid LED")
-	}
-	if err != nil {
-		return err
 	}
 
 	values[led] = intensity
 
-	err = bus.WriteByteBlock(address, setPwmValues, values)
+	err := bus.WriteByteBlock(address, setPwmValues, values)
 	if err != nil {
 		return err
 	}
@@ -69,6 +70,10 @@ func PiGlow(led, intensity byte) error {
 
 // Led toggle a single led based on a leg and color
 func Led(leg, color, intensity byte) error {
+	if bus_err != nil {
+		return bus_err
+	}
+
 	if leg < 0 || leg > 2 {
 		return errors.New("invalid leg")
 	}
@@ -81,18 +86,19 @@ func Led(leg, color, intensity byte) error {
 
 // Leg entirely light up a complete leg
 func Leg(leg, intensity byte) error {
+	if bus_err != nil {
+		return bus_err
+	}
+
 	if leg < 0 || leg > 2 {
 		return errors.New("invalid leg")
-	}
-	if err != nil {
-		return err
 	}
 
 	for _, led := range legs[leg] {
 		values[led] = intensity
 	}
 
-	err = bus.WriteByteBlock(address, setPwmValues, values)
+	err := bus.WriteByteBlock(address, setPwmValues, values)
 	if err != nil {
 		return err
 	}
@@ -102,18 +108,19 @@ func Leg(leg, intensity byte) error {
 
 // Ring entirely light up a certain color/ring
 func Ring(color, intensity byte) error {
+	if bus_err != nil {
+		return bus_err
+	}
+
 	if color < 0 || color > 5 {
 		return errors.New("invalid ring")
-	}
-	if err != nil {
-		return err
 	}
 
 	values[legs[0][color]] = intensity
 	values[legs[1][color]] = intensity
 	values[legs[2][color]] = intensity
 
-	err = bus.WriteByteBlock(address, setPwmValues, values)
+	err := bus.WriteByteBlock(address, setPwmValues, values)
 	if err != nil {
 		return err
 	}
@@ -124,6 +131,10 @@ func Ring(color, intensity byte) error {
 // Fade a certain led at leg with color from intensity from to intensity to
 // with intervals of interval
 func Fade(leg, color, from, to byte, interval time.Duration) error {
+	if bus_err != nil {
+		return bus_err
+	}
+
 	if leg < 0 || leg > 2 {
 		return errors.New("invalid leg")
 	}
@@ -133,7 +144,7 @@ func Fade(leg, color, from, to byte, interval time.Duration) error {
 
 	for i := from; i != to; i++ {
 		values[legs[leg][color]] = i
-		err = bus.WriteByteBlock(address, setPwmValues, values)
+		err := bus.WriteByteBlock(address, setPwmValues, values)
 		if err != nil {
 			return err
 		}
@@ -148,15 +159,15 @@ func Fade(leg, color, from, to byte, interval time.Duration) error {
 
 // ShutDown Turn off all the lights
 func ShutDown() error {
-	if err != nil {
-		return err
+	if bus_err != nil {
+		return bus_err
 	}
 
 	for i := 0; i < 18; i++ {
 		values[i] = 0x00
 	}
 
-	err = bus.WriteByteBlock(address, setPwmValues, values)
+	err := bus.WriteByteBlock(address, setPwmValues, values)
 	if err != nil {
 		return err
 	}
