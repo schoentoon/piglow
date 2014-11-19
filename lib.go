@@ -15,7 +15,7 @@ import (
 	"time"
 )
 
-var bus, bus_err = i2c.Bus(1)
+var bus, busErr = i2c.Bus(1)
 
 const (
 	address = 0x54
@@ -37,9 +37,9 @@ const (
 )
 
 func init() {
-	if bus != nil || bus_err == nil {
-		bus_err = bus.WriteByte(address, enableOutput, 0x01)
-		bus_err = bus.WriteByteBlock(address, enableLeds, []byte{0xFF, 0xFF, 0xFF})
+	if bus != nil || busErr == nil {
+		busErr = bus.WriteByte(address, enableOutput, 0x01)
+		busErr = bus.WriteByteBlock(address, enableLeds, []byte{0xFF, 0xFF, 0xFF})
 	}
 }
 
@@ -50,8 +50,8 @@ var legs = [][]byte{{6, 7, 8, 5, 4, 9}, {17, 16, 15, 13, 11, 10}, {0, 1, 2, 3, 1
 
 // PiGlow toggle a single led to a certain intensity
 func PiGlow(led, intensity byte) error {
-	if bus_err != nil || bus == nil {
-		return bus_err
+	if busErr != nil || bus == nil {
+		return busErr
 	}
 
 	if led < 0 || led > 18 {
@@ -70,8 +70,8 @@ func PiGlow(led, intensity byte) error {
 
 // Led toggle a single led based on a leg and color
 func Led(leg, color, intensity byte) error {
-	if bus_err != nil || bus == nil {
-		return bus_err
+	if busErr != nil || bus == nil {
+		return busErr
 	}
 
 	if leg < 0 || leg > 2 {
@@ -86,8 +86,8 @@ func Led(leg, color, intensity byte) error {
 
 // Leg entirely light up a complete leg
 func Leg(leg, intensity byte) error {
-	if bus_err != nil || bus == nil {
-		return bus_err
+	if busErr != nil || bus == nil {
+		return busErr
 	}
 
 	if leg < 0 || leg > 2 {
@@ -108,8 +108,8 @@ func Leg(leg, intensity byte) error {
 
 // Ring entirely light up a certain color/ring
 func Ring(color, intensity byte) error {
-	if bus_err != nil || bus == nil {
-		return bus_err
+	if busErr != nil || bus == nil {
+		return busErr
 	}
 
 	if color < 0 || color > 5 {
@@ -131,8 +131,8 @@ func Ring(color, intensity byte) error {
 // Fade a certain led at leg with color from intensity from to intensity to
 // with intervals of interval
 func Fade(leg, color, from, to byte, interval time.Duration) error {
-	if bus_err != nil || bus == nil {
-		return bus_err
+	if busErr != nil || bus == nil {
+		return busErr
 	}
 
 	if leg < 0 || leg > 2 {
@@ -159,8 +159,8 @@ func Fade(leg, color, from, to byte, interval time.Duration) error {
 
 // ShutDown Turn off all the lights
 func ShutDown() error {
-	if bus_err != nil || bus == nil {
-		return bus_err
+	if busErr != nil || bus == nil {
+		return busErr
 	}
 
 	for i := 0; i < 18; i++ {
@@ -174,4 +174,9 @@ func ShutDown() error {
 	err = bus.WriteByte(address, update, 0xFF)
 
 	return err
+}
+
+// HasPiGlow Simply check if we have a piglow or not
+func HasPiGlow() bool {
+	return bus == nil
 }
