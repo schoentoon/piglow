@@ -178,5 +178,5 @@ func ShutDown() error {
 
 // HasPiGlow Simply check if we have a piglow or not
 func HasPiGlow() bool {
-	return bus == nil
+	return busErr == nil
 }

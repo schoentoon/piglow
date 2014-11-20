@@ -15,11 +15,19 @@ import (
 )
 
 func TestSingleLed(t *testing.T) {
+	if HasPiGlow() == false {
+		t.Fatal("No piglow detected")
+	}
+
 	Led(1, Red, 0x10)
 	ShutDown()
 }
 
 func TestCircleLegs(t *testing.T) {
+	if HasPiGlow() == false {
+		t.Fatal("No piglow detected")
+	}
+
 	Leg(0, 0x10)
 	time.Sleep(500 * time.Millisecond)
 	Leg(0, 0x00)
@@ -32,6 +40,10 @@ func TestCircleLegs(t *testing.T) {
 }
 
 func TestFlashRings(t *testing.T) {
+	if HasPiGlow() == false {
+		t.Fatal("No piglow detected")
+	}
+
 	for i := 0; i < 10; i++ {
 		for ring := 0; ring < 6; ring++ {
 			if ring == 0 {
@@ -47,6 +59,10 @@ func TestFlashRings(t *testing.T) {
 }
 
 func TestFadeLed(t *testing.T) {
+	if HasPiGlow() == false {
+		t.Fatal("No piglow detected")
+	}
+
 	Fade(0, Red, 0x00, 0x64, 10*time.Millisecond)
 	ShutDown()
 }
