@@ -135,6 +135,10 @@ func Fade(leg, color, from, to byte, interval time.Duration) error {
 		return busErr
 	}
 
+	if from == to {
+		return nil
+	}
+
 	if leg < 0 || leg > 2 {
 		return errors.New("invalid leg")
 	}
@@ -142,7 +146,12 @@ func Fade(leg, color, from, to byte, interval time.Duration) error {
 		return errors.New("invalid color")
 	}
 
-	for i := from; i != to; i++ {
+	step := func(in byte) byte { return in + 1 }
+	if from > to {
+		step = func(in byte) byte { return in - 1 }
+	}
+
+	for i := from; i != to; i = step(i) {
 		values[legs[leg][color]] = i
 		err := bus.WriteByteBlock(address, setPwmValues, values)
 		if err != nil {
